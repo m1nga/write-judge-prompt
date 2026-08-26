@@ -1,0 +1,4 @@
+interface:
+  display_name: "Write Judge Prompt"
+  short_description: "Design a binary Pass/Fail LLM-as-Judge for one failure mode"
+  default_prompt: "Use $write-judge-prompt to design an LLM judge for the failure mode I describe, grounded in my real labeled traces."
