@@ -33,7 +33,7 @@ If you show up without labeled traces, it stops and helps you label 10-20 real o
 
 ## Works well with
 
-- [`validate-evaluator`](https://github.com/m1nga/validate-evaluator) — the other half of the loop. This skill builds the judge; that one measures whether the judge actually agrees with your labels before you trust a single number it produces.
+- [`validate-evaluator`](https://github.com/m1nga/validate-evaluator/) — the other half of the loop. This skill builds the judge; that one measures whether the judge actually agrees with your labels before you trust a single number it produces.
 
 ## Design notes
 
@@ -52,7 +52,7 @@ Probed 7 scenarios across 4 personas · 4 fired correctly · 2 correctly stayed 
 
 > **"I need an LLM to grade whether my support bot's answers stick to the retrieved docs"** → fired: one faithfulness judge, binary Pass/Fail, few-shot examples drawn only from the train split, critique before verdict.
 
-Probe method: [scenario-probe](https://github.com/m1nga/scenario-probe)
+Probe method: [scenario-probe](https://github.com/m1nga/scenario-probe/)
 
 ## Author
 
