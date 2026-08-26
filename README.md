@@ -1,4 +1,4 @@
-# write-judge-prompt
+# Build a Reliable Pass-Fail LLM Judge Prompt
 
 Turn one identified failure mode into a binary Pass/Fail LLM judge prompt — grounded in your real labeled traces, and it refuses to proceed without them.
 
