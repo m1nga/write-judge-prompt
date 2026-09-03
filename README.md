@@ -1,4 +1,4 @@
-# Build a Reliable Pass-Fail LLM Judge Prompt
+# LLM Judge Prompt Builder — Turn One Quality Rule into a Pass/Fail Evaluator
 
 Turn one identified failure mode into a binary Pass/Fail LLM judge prompt — grounded in your real labeled traces, and it refuses to proceed without them.
 
