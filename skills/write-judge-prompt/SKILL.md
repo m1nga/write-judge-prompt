@@ -30,7 +30,16 @@ Respond in the user's language. The judge prompt itself is normally written in E
 
 ### Cold start: no labeled traces yet
 
-If labeled traces do not exist: STOP. Collect and label 10-20 real traces with the user first (its companion skill validate-evaluator, if installed, includes a minimal labeling flow for this); full calibration later needs ~100 labeled traces (see validate-evaluator). Never fabricate few-shot examples — fabricated examples violate the training-split rule and produce an ungrounded judge: it will agree with your invented notion of the failure mode, not with how the failure actually appears in production.
+If no human-labeled examples are supplied, stop building a finished judge and
+help the user collect and label 10–20 real traces first. This starts the dataset;
+it does not meet the full calibration target or establish accuracy. Never invent
+traces or fill human labels yourself.
+
+For a pre-launch prototype, existing synthetic traces supplied by the user may
+be used only after a human labels them and their synthetic provenance is recorded.
+This is the explicit provisional exception described below, not permission to
+generate examples and call them human evidence. With no examples, provide the
+criterion and a labeling plan, leaving the judge unfinished.
 
 ## The Four Components
 
@@ -71,6 +80,8 @@ FAIL: The email uses a tone mismatched to the client persona. Examples:
 ### 3. Few-Shot Examples
 
 Include labeled Pass and Fail examples from the user's human-labeled data.
+The real-estate examples below illustrate the format only; they are not the user's
+traces and must not be copied as evidence into their finished judge.
 
 ```
 ## Examples
@@ -115,8 +126,12 @@ Result: Pass
 - 2-4 examples is typical. Performance plateaus after 4-8.
 
 **Rules for synthetic examples:**
-- Few-shot examples must come from real, human-labeled traces. Do not invent examples, and do not let an LLM invent them.
-- If the user genuinely has only synthetic data (pre-launch, no traffic yet): any synthetic example used in the prompt must be explicitly marked as synthetic, and must not share provenance with synthetic dev or test items (not the same generator prompt, not the same generation run). Otherwise the judge is later graded on data it was effectively tuned on, and the alignment numbers are fiction.
+- Default to real, human-labeled traces. Do not invent examples or labels. The
+  sole pre-launch exception is supplied synthetic traces with human labels.
+- For the provisional exception, record source/generator/run identifiers and
+  keep prompt examples separate from dev data, including generation provenance.
+  Synthetic data cannot establish a final production test result. The companion
+  validator reserves the held-out test set for real human-labeled traces.
 - Treat a synthetic-fed judge as provisional. Replace the examples with real traces as soon as they exist, then re-validate.
 
 ### 4. Structured Output Format
@@ -170,7 +185,8 @@ Save the finished judge prompt in the user's project, e.g. `evals/judges/<failur
 - **Vague criteria like "is this helpful?"** Target a specific, observable failure mode from error analysis.
 - **Holistic judge for the entire trace.** A single judge covering multiple dimensions produces unactionable verdicts.
 - **No few-shot examples.** Without examples, the model won't know what counts as a failure in your application.
-- **Fabricated few-shot examples.** See the cold-start rule: if no labeled traces exist, stop and collect them. An example you invented teaches the judge your imagination, not the failure mode.
+- **Fabricated few-shot examples or labels.** Follow the cold-start rule and its
+  explicit supplied-synthetic exception. A provisional prototype is not calibrated.
 - **Dev/test examples used as few-shot.** This is data leakage. Use only the training split.
 - **Likert scales (1-5, letter grades, etc.).** Binary pass/fail only. Likert scales produce scores that sound precise but can't be calibrated: annotators disagree on the difference between a 3 and a 4, and the judge inherits that noise. Binary forces you to define a clear decision boundary upfront, which makes inter-annotator agreement measurable and the judge's errors actionable. If you need to capture severity, use multiple binary judges (e.g., "factually wrong" and "dangerously wrong") rather than one ordinal scale.
 - **Skipping validation.** Measure alignment with human labels before trusting the judge — its companion skill validate-evaluator, if installed, covers the full procedure (splits, TPR/TNR, bias correction).

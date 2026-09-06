@@ -1,6 +1,7 @@
 # LLM Judge Prompt Builder — Turn One Quality Rule into a Pass/Fail Evaluator
 
-Turn one identified failure mode into a binary Pass/Fail LLM judge prompt — grounded in your real labeled traces, and it refuses to proceed without them.
+Turn one identified failure mode into a binary Pass/Fail LLM judge prompt — grounded in human-labeled traces. Without labels it helps build the dataset; supplied
+synthetic traces can support an explicitly provisional pre-launch prototype.
 
 ## What it does
 
@@ -23,13 +24,19 @@ It stays quiet when the check is code-shaped (regex, schema validation, executio
 npx skills add m1nga/write-judge-prompt
 ```
 
-## Example
+## First-use example (illustrative)
 
 > **You:** My RAG bot keeps answering from its own knowledge instead of the retrieved docs. I have ~50 traces where I marked which ones did this.
 >
 > **Claude:** That's a faithfulness failure — code can't check it, so a judge fits. First: your 50 labels split into train/dev/test, and few-shot examples come only from the train split. Here's the criterion statement… [builds the four components, ends with a JSON output schema and a pointer to validate-evaluator for calibration]
 
-If you show up without labeled traces, it stops and helps you label 10-20 real ones first, rather than inventing examples.
+With no labeled traces, the useful first output is a criterion plus a plan to
+label 10–20 real examples; it leaves the finished judge pending. For example,
+“check whether each answer is supported by retrieved text” becomes one
+faithfulness criterion, with the retrieved text and answer retained per trace.
+If you supply synthetic examples with human labels, it can draft a provisional
+judge, records that provenance, and makes no production-accuracy claim. Synthetic
+test data never substitutes for the companion validator's real held-out test set.
 
 ## Works well with
 
@@ -42,7 +49,9 @@ If you show up without labeled traces, it stops and helps you label 10-20 real o
 - **Critique before verdict.** The judge must argue its case before ruling. Verdict-first judges rationalize; critique-first judges deliberate.
 - **The cold-start STOP rule** exists because the tempting shortcut — "just generate some plausible Pass/Fail examples" — produces a judge calibrated to your imagination. This skill's rules are the residue of a solo builder learning that an eval which measures nothing is worse than no eval, because you believe it.
 
-## Field-tested
+## Evidence
+
+### Historical scenario probes (simulated)
 
 Probed 7 scenarios across 4 personas · 4 fired correctly · 2 correctly stayed quiet · 1 boundary coin-flip logged.
 
@@ -56,4 +65,4 @@ Probe method: [scenario-probe](https://github.com/m1nga/scenario-probe/)
 
 ## Author
 
-Built by [Ming](https://github.com/m1nga). The design notes above explain the real problem and tradeoffs that shaped this skill.
+Built and maintained by [Ming](https://github.com/m1nga).
